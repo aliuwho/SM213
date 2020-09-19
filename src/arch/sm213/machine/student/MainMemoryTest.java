@@ -134,8 +134,7 @@ public class MainMemoryTest {
     //test bytesToInteger() on non-negative signed integers
     public void testBytesToIntegerPos() {
         // hex input: 00 00 00 00
-        byte[] test1 = new byte[4];
-        int val1 = mem.bytesToInteger(test1[0], test1[1], test1[2], test1[3]);
+        int val1 = mem.bytesToInteger((byte) 0x0, (byte) 0x0, (byte) 0x0, (byte) 0x0);
         Assert.assertEquals(0, val1);
 
         // hex input: 6c 6d 6e 6f
