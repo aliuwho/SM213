@@ -44,8 +44,17 @@ public class MainMemory extends AbstractMainMemory {
      */
     @Override
     public int bytesToInteger(byte byteAtAddrPlus0, byte byteAtAddrPlus1, byte byteAtAddrPlus2, byte byteAtAddrPlus3) {
+        //using my code from Endianness
         int val = 0;
-        val = mem[byteAtAddrPlus0] << (8 * 3) + mem[byteAtAddrPlus1] << (16) + mem[byteAtAddrPlus2] << 8 + mem[byteAtAddrPlus3];
+        byte[] bytes = {byteAtAddrPlus0, byteAtAddrPlus1, byteAtAddrPlus2, byteAtAddrPlus3};
+        for (int i = 0; i < bytes.length; i++) {
+            val = val << 8;
+            if (bytes[i] < 0) {
+                val += (256 + bytes[i]);
+            } else {
+                val += bytes[i];
+            }
+        }
         return val;
     }
 
@@ -76,13 +85,11 @@ public class MainMemory extends AbstractMainMemory {
      */
     @Override
     protected byte[] get(int address, int length) throws InvalidAddressException {
-        if(mem.length-address-length>=0) {
+        if (address >= 0 && mem.length - address - length >= 0) {
             byte[] ret = new byte[length];
-            for (int i = 0; i < ret.length; i++) {
-                ret[i] = mem[address + i];
-            }
+            if (ret.length >= 0) System.arraycopy(mem, address, ret, 0, ret.length);
             return ret;
-        }else {
+        } else {
             throw new InvalidAddressException();
         }
     }
@@ -96,7 +103,11 @@ public class MainMemory extends AbstractMainMemory {
      */
     @Override
     protected void set(int address, byte[] value) throws InvalidAddressException {
-        // TODO
+        if (address >= 0 && mem.length - address - value.length >= 0) {
+            System.arraycopy(value, 0, mem, address, value.length);
+        } else {
+            throw new InvalidAddressException();
+        }
     }
 
     /**
