@@ -30,7 +30,7 @@ public class MainMemory extends AbstractMainMemory {
      */
     @Override
     protected boolean isAccessAligned(int address, int length) {
-       return address%length==0;
+        return address % length == 0;
     }
 
     /**
@@ -44,8 +44,9 @@ public class MainMemory extends AbstractMainMemory {
      */
     @Override
     public int bytesToInteger(byte byteAtAddrPlus0, byte byteAtAddrPlus1, byte byteAtAddrPlus2, byte byteAtAddrPlus3) {
-        // TODO
-        return 0;
+        int val = 0;
+        val = mem[byteAtAddrPlus0] << (8 * 3) + mem[byteAtAddrPlus1] << (16) + mem[byteAtAddrPlus2] << 8 + mem[byteAtAddrPlus3];
+        return val;
     }
 
     /**
@@ -56,8 +57,13 @@ public class MainMemory extends AbstractMainMemory {
      */
     @Override
     public byte[] integerToBytes(int i) {
-        // TODO
-        return null;
+        byte[] ret = new byte[4];
+        int j = i;
+        for (int k = ret.length - 1; k >= 0; k--) {
+            ret[k] = (byte) (j >> 8);
+            j = j >> 8;
+        }
+        return ret;
     }
 
     /**
@@ -70,8 +76,15 @@ public class MainMemory extends AbstractMainMemory {
      */
     @Override
     protected byte[] get(int address, int length) throws InvalidAddressException {
-        // TODO
-        return null;
+        if(mem.length-address-length>=0) {
+            byte[] ret = new byte[length];
+            for (int i = 0; i < ret.length; i++) {
+                ret[i] = mem[address + i];
+            }
+            return ret;
+        }else {
+            throw new InvalidAddressException();
+        }
     }
 
     /**
