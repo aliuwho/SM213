@@ -154,4 +154,46 @@ public class MainMemoryTest {
         int val2 = mem.bytesToInteger(BYTES1[0], BYTES1[1], BYTES1[2], BYTES1[3]);
         Assert.assertEquals(-1600019805, val2);
     }
+
+    @Test
+    //test integerToBytes on non-negative signed integers
+    public void testIntegerToBytesPos() {
+        byte[] val1 = mem.integerToBytes(0);
+        for (byte b : val1) {
+            Assert.assertEquals(0, b);
+        }
+
+        byte[] val2 = mem.integerToBytes(1819111023);
+        Assert.assertEquals((byte) 0x6c, val2[3]);
+        Assert.assertEquals((byte) 0x6d, val2[2]);
+        Assert.assertEquals((byte) 0x6e, val2[1]);
+        Assert.assertEquals((byte) 0x6f, val2[0]);
+
+        byte[] val3 = mem.integerToBytes(1);
+        Assert.assertEquals((byte) 0x0, val3[3]);
+        Assert.assertEquals((byte) 0x0, val3[2]);
+        Assert.assertEquals((byte) 0x0, val3[1]);
+        Assert.assertEquals((byte) 0x1, val3[0]);
+
+
+    }
+
+    @Test
+    //test integerToBytes on negative signed integers
+    public void testIntegerToBytesNeg() {
+
+        byte[] val2 = mem.integerToBytes(-1);
+        Assert.assertEquals((byte) 0xff, val2[3]);
+        Assert.assertEquals((byte) 0xff, val2[2]);
+        Assert.assertEquals((byte) 0xff, val2[1]);
+        Assert.assertEquals((byte) 0xff, val2[0]);
+
+        byte[] val3 = mem.integerToBytes(-1600019805);
+        Assert.assertEquals((byte) 0xa1, val3[3]);
+        Assert.assertEquals((byte) 0xa2, val3[2]);
+        Assert.assertEquals((byte) 0xa3, val3[1]);
+        Assert.assertEquals((byte) 0xa4, val3[0]);
+
+
+    }
 }

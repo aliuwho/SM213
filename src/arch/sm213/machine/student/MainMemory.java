@@ -47,12 +47,12 @@ public class MainMemory extends AbstractMainMemory {
         //using my code from Endianness
         int val = 0;
         byte[] bytes = {byteAtAddrPlus0, byteAtAddrPlus1, byteAtAddrPlus2, byteAtAddrPlus3};
-        for (int i = 0; i < bytes.length; i++) {
+        for (byte aByte : bytes) {
             val = val << 8;
-            if (bytes[i] < 0) {
-                val += (256 + bytes[i]);
+            if (aByte < 0) {
+                val += (256 + aByte);
             } else {
-                val += bytes[i];
+                val += aByte;
             }
         }
         return val;
@@ -67,10 +67,15 @@ public class MainMemory extends AbstractMainMemory {
     @Override
     public byte[] integerToBytes(int i) {
         byte[] ret = new byte[4];
-        int j = i;
-        for (int k = ret.length - 1; k >= 0; k--) {
-            ret[k] = (byte) (j >> 8);
-            j = j >> 8;
+        int num = i;
+        for (int k = 0; k < ret.length; k++) {
+            byte one = (byte) (num % 16);
+            num /= 16;
+            byte two = (byte) (num % 16);
+            num /= 16;
+            ret[k] = (byte) (two*16 + one);
+//            System.out.println(one + "     " + two + "     " + num + "     " + ret[k]);
+//            System.out.println(ret[k]);
         }
         return ret;
     }
