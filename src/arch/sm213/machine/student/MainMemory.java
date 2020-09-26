@@ -56,6 +56,13 @@ public class MainMemory extends AbstractMainMemory {
             }
         }
         return val;
+
+        /* solution code:
+          return (((int) byteAtAddrPlus0) & 0xff) << 24 |
+                     (((int) byteAtAddrPlus1) & 0xff) << 16 |
+                     (((int) byteAtAddrPlus2) & 0xff) <<  8 |
+                     (((int) byteAtAddrPlus3) & 0xff);
+         */
     }
 
     /**
@@ -78,6 +85,15 @@ public class MainMemory extends AbstractMainMemory {
 //            System.out.println(ret[k]);
         }
         return ret;
+
+        /* solution code:
+            byte[] b = new byte [4];
+              b [0] = (byte) (i >>> 24);
+              b [1] = (byte) (i >>> 16);
+              b [2] = (byte) (i >>> 8);
+              b [3] = (byte) i;
+              return b;
+         */
     }
 
     /**
