@@ -2,7 +2,6 @@ package arch.sm213.machine.student;
 
 import machine.AbstractMainMemory;
 
-
 /**
  * Main Memory of Simple CPU.
  * <p>
@@ -44,25 +43,10 @@ public class MainMemory extends AbstractMainMemory {
      */
     @Override
     public int bytesToInteger(byte byteAtAddrPlus0, byte byteAtAddrPlus1, byte byteAtAddrPlus2, byte byteAtAddrPlus3) {
-        //using my code from Endianness
-        int val = 0;
-        byte[] bytes = {byteAtAddrPlus0, byteAtAddrPlus1, byteAtAddrPlus2, byteAtAddrPlus3};
-        for (byte aByte : bytes) {
-            val = val << 8;
-            if (aByte < 0) {
-                val += (256 + aByte);
-            } else {
-                val += aByte;
-            }
-        }
-        return val;
-
-        /* solution code:
-          return (((int) byteAtAddrPlus0) & 0xff) << 24 |
-                     (((int) byteAtAddrPlus1) & 0xff) << 16 |
-                     (((int) byteAtAddrPlus2) & 0xff) <<  8 |
-                     (((int) byteAtAddrPlus3) & 0xff);
-         */
+        return (((int) byteAtAddrPlus0) & 0xff) << 24 |
+                (((int) byteAtAddrPlus1) & 0xff) << 16 |
+                (((int) byteAtAddrPlus2) & 0xff) << 8 |
+                (((int) byteAtAddrPlus3) & 0xff);
     }
 
     /**
@@ -73,27 +57,12 @@ public class MainMemory extends AbstractMainMemory {
      */
     @Override
     public byte[] integerToBytes(int i) {
-        byte[] ret = new byte[4];
-        int num = i;
-        for (int k = 0; k < ret.length; k++) {
-            byte one = (byte) (num % 16);
-            num /= 16;
-            byte two = (byte) (num % 16);
-            num /= 16;
-            ret[k] = (byte) (two*16 + one);
-//            System.out.println(one + "     " + two + "     " + num + "     " + ret[k]);
-//            System.out.println(ret[k]);
-        }
-        return ret;
-
-        /* solution code:
-            byte[] b = new byte [4];
-              b [0] = (byte) (i >>> 24);
-              b [1] = (byte) (i >>> 16);
-              b [2] = (byte) (i >>> 8);
-              b [3] = (byte) i;
-              return b;
-         */
+        byte[] b = new byte[4];
+        b[0] = (byte) (i >>> 24);
+        b[1] = (byte) (i >>> 16);
+        b[2] = (byte) (i >>> 8);
+        b[3] = (byte) i;
+        return b;
     }
 
     /**
@@ -102,17 +71,16 @@ public class MainMemory extends AbstractMainMemory {
      * @param address address of the first byte to fetch.
      * @param length  number of bytes to fetch.
      * @return an array of byte where [0] is memory value at address, [1] is memory value at address+1 etc.
-     * @throws InvalidAddressException if any address in the range address to address+length-1 is invalid.
+     * @throws InvalidAddressException if any address in the range address to address+length-1 is invalide.
      */
     @Override
     protected byte[] get(int address, int length) throws InvalidAddressException {
-        if (address >= 0 && mem.length - address - length >= 0) {
-            byte[] ret = new byte[length];
-            if (ret.length >= 0) System.arraycopy(mem, address, ret, 0, ret.length);
-            return ret;
-        } else {
+        if (address < 0 || address + length - 1 >= mem.length)
             throw new InvalidAddressException();
-        }
+        byte[] value = new byte[length];
+        for (int i = 0; i < length; i++)
+            value[i] = mem[address + i];
+        return value;
     }
 
     /**
@@ -120,15 +88,14 @@ public class MainMemory extends AbstractMainMemory {
      *
      * @param address address of the first byte in memory to recieve the specified value.
      * @param value   an array of byte values to store in memory at the specified address.
-     * @throws InvalidAddressException if any address in the range address to address+value.length-1 is invalid.
+     * @throws InvalidAddressException if any address in the range address to address+value.length-1 is invalide.
      */
     @Override
     protected void set(int address, byte[] value) throws InvalidAddressException {
-        if (address >= 0 && mem.length - address - value.length >= 0) {
-            System.arraycopy(value, 0, mem, address, value.length);
-        } else {
+        if (address < 0 || address + value.length - 1 >= mem.length)
             throw new InvalidAddressException();
-        }
+        for (int i = 0; i < value.length; i++)
+            mem[address + i] = value[i];
     }
 
     /**
